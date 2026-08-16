@@ -1,0 +1,12 @@
+# CMake build output
+build/
+
+# clangd cahce
+.cache/
+
+# compilation database symlink
+compile_commands.json
+
+# Swapfiles
+*.swp
+*.swo
