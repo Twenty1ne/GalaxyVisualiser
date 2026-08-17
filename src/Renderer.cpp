@@ -51,7 +51,7 @@ void Renderer::upload(const Geometry& geometry){
     glBindVertexArray(0);
 }
 
-void Renderer::render(float aspectRatio){
+void Renderer::render(float aspectRatio, const glm::mat4& view){
     m_shader.use();
 
     glm::mat4 model(1.0f);
@@ -68,6 +68,7 @@ void Renderer::render(float aspectRatio){
     );
 
     m_shader.setMat4("model", model);
+    m_shader.setMat4("view", view);
 
     glm::mat4 projection = glm::perspective(
         glm::radians(45.0f),
