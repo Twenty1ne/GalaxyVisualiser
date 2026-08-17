@@ -11,7 +11,7 @@ public:
     ~Renderer();
 
     void upload(const Geometry& geometry);
-    void render();
+    void render(float aspectRatio);
 
 private:
     unsigned int m_vao;

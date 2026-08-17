@@ -2,6 +2,11 @@
 
 #include <glad/gl.h>
 
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/trigonometric.hpp>
+
 Renderer::Renderer() :
     m_shader("shaders/basic.vert", "shaders/basic.frag"),
     m_vertexCount(0),
@@ -46,8 +51,32 @@ void Renderer::upload(const Geometry& geometry){
     glBindVertexArray(0);
 }
 
-void Renderer::render(){
+void Renderer::render(float aspectRatio){
     m_shader.use();
+
+    glm::mat4 model(1.0f);
+
+    model = glm::translate(
+        model,
+        glm::vec3(0.0, 0.0f, -2.0f)
+    );
+
+    model = glm::rotate(
+        model,
+        glm::radians(45.0f),
+        glm::vec3(0.0f, 0.0f, 1.0f)
+    );
+
+    m_shader.setMat4("model", model);
+
+    glm::mat4 projection = glm::perspective(
+        glm::radians(45.0f),
+        aspectRatio,
+        0.1f,
+        100.0f
+    );
+
+    m_shader.setMat4("projection", projection);
 
     glBindVertexArray(m_vao);
 

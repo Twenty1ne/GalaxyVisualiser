@@ -21,6 +21,7 @@ int main(){
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     GLFWwindow* window = glfwCreateWindow(1280, 720, "Galaxy Viewer", nullptr, nullptr);
+    glfwSetWindowPos(window, 100, 100);
 
     if(!window){
         std::cerr << "Faile to create GLFW window\n";
@@ -53,7 +54,18 @@ int main(){
             glClearColor(0.5f, 0.1f, 0.2f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            renderer.render();
+            int width;
+            int height;
+
+            glfwGetFramebufferSize(
+                window,
+                &width,
+                &height
+            );
+
+            float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+
+            renderer.render(aspectRatio);
 
             glfwSwapBuffers(window);
             glfwPollEvents();
