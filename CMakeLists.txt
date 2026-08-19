@@ -6,6 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(galaxy_viewer
     src/main.cpp
+    src/Camera.cpp
     src/Geometry.cpp
     src/Renderer.cpp
     src/Shader.cpp

@@ -2,14 +2,12 @@
 #include <GLFW/glfw3.h>
 #include <glad/gl.h>
 
+#include "Camera.h"
 #include "Geometry.h"
 #include "Renderer.h"
 
 #include <iostream>
 #include <vector>
-
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/mat4x4.hpp>
 
 int main(){
     std::cout << std::endl;
@@ -50,13 +48,8 @@ int main(){
 
         Geometry triangle(triangleVertices);
         Renderer renderer;
-
-        glm::mat4 view = glm::lookAt(
-            glm::vec3(0.0f, 0.0f, 3.0f),
-            glm::vec3(0.0f, 0.0f, 0.0f),
-            glm::vec3(0.0f, 1.0f, 0.0f)
-        );
-
+        Camera camera;
+        
         renderer.upload(triangle);
 
         while(!glfwWindowShouldClose(window)){
@@ -74,7 +67,7 @@ int main(){
 
             float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 
-            renderer.render(aspectRatio, view);
+            renderer.render(aspectRatio, camera.viewMatrix());
 
             glfwSwapBuffers(window);
             glfwPollEvents();
