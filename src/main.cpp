@@ -58,17 +58,67 @@ int main(){
     }
 
     {
-        std::vector<float> triangleVertices = {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f
+        std::vector<float> cubeVertices = {
+            // Front face
+            -0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
+             0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
+        
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
+        
+            // Back face
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+             0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+             0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+        
+             0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+        
+            // Left face
+            -0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
+            -0.5f,  0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
+        
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
+            -0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
+        
+            // Right face
+             0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 0.0f,
+             0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
+             0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
+        
+             0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
+             0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 0.0f,
+             0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 0.0f,
+        
+            // Bottom face
+            -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f,
+             0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f,
+             0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 1.0f,
+        
+             0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f,
+        
+            // Top face
+            -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+             0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+             0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
+        
+             0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
+            -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
+            -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 1.0f
         };
 
-        Geometry triangle(triangleVertices);
+        Geometry cube(cubeVertices, 6);
         Renderer renderer;
         Camera camera;
 
-        renderer.upload(triangle);
+        renderer.upload(cube);
 
         double lastMouseX;
         double lastMouseY;
@@ -107,7 +157,7 @@ int main(){
             );
 
             glClearColor(0.5f, 0.1f, 0.2f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             int width;
             int height;

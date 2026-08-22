@@ -15,6 +15,8 @@ Renderer::Renderer() :
 
     glGenVertexArrays(1, &m_vao);
     glGenBuffers(1, &m_vbo);
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 Renderer::~Renderer(){
@@ -42,11 +44,22 @@ void Renderer::upload(const Geometry& geometry){
         3,
         GL_FLOAT,
         GL_FALSE,
-        3 * sizeof(float),
+        geometry.floatsPerVertex() * sizeof(float),
         nullptr
     );
 
     glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(
+        1,
+        3,
+        GL_FLOAT,
+        GL_FALSE,
+        geometry.floatsPerVertex() * sizeof(float),
+        reinterpret_cast<void*>(3 * sizeof(float))
+    );
+
+    glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
 }
@@ -55,17 +68,6 @@ void Renderer::render(float aspectRatio, const glm::mat4& view){
     m_shader.use();
 
     glm::mat4 model(1.0f);
-
-    model = glm::translate(
-        model,
-        glm::vec3(0.0, 0.0f, -2.0f)
-    );
-
-    model = glm::rotate(
-        model,
-        glm::radians(45.0f),
-        glm::vec3(0.0f, 0.0f, 1.0f)
-    );
 
     m_shader.setMat4("model", model);
     m_shader.setMat4("view", view);
