@@ -5,4 +5,6 @@
 class GeometryBuilder{
 public:
     static Geometry makeCube();
+
+    static Geometry makePoints();
 };

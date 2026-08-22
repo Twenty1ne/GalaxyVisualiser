@@ -59,12 +59,12 @@ int main(){
 
     {
 
-        Geometry cube = GeometryBuilder::makeCube();
+        Geometry points = GeometryBuilder::makePoints();
 
         Renderer renderer;
         Camera camera;
 
-        renderer.upload(cube);
+        renderer.upload(points);
 
         double lastMouseX;
         double lastMouseY;

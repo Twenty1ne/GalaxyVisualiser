@@ -20,6 +20,9 @@ private:
     unsigned int m_ebo;
 
     std::size_t m_indexCount;
+    std::size_t m_vertexCount;
+
+    PrimitiveType m_primitiveType;
 
     Shader m_shader;
 };

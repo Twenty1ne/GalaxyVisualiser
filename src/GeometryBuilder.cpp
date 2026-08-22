@@ -65,5 +65,18 @@ Geometry GeometryBuilder::makeCube(){
         22, 23, 20
     };
 
-    return Geometry(vertices, 6, indices);
+    return Geometry(vertices, 6, indices, PrimitiveType::Triangles);
+}
+
+Geometry GeometryBuilder::makePoints(){
+    std::vector<float> vertices = {
+        // position          // colour
+        -0.8f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,
+        -0.4f,  0.2f, 0.0f,   0.0f, 1.0f, 0.0f,
+         0.0f, -0.1f, 0.0f,   0.0f, 0.0f, 1.0f,
+         0.4f,  0.4f, 0.0f,   1.0f, 1.0f, 0.0f,
+         0.8f, -0.3f, 0.0f,   1.0f, 0.0f, 1.0f
+    };
+
+    return Geometry(vertices, 6, PrimitiveType::Points);
 }
