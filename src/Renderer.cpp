@@ -82,6 +82,19 @@ void Renderer::upload(const Geometry& geometry){
 
     glEnableVertexAttribArray(1);
 
+    if(geometry.primitiveType() == PrimitiveType::Points){
+        glVertexAttribPointer(
+            2,
+            Geometry::SizeComponents,
+            GL_FLOAT,
+            GL_FALSE,
+            geometry.floatsPerVertex() * sizeof(float),
+            reinterpret_cast<void*>((Geometry::PositionComponents + Geometry::ColorComponents) * sizeof(float))
+        );
+
+        glEnableVertexAttribArray(2);
+    }
+
     glBindVertexArray(0);
 }
 

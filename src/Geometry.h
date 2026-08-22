@@ -12,6 +12,7 @@ class Geometry{
 public:
     static constexpr std::size_t PositionComponents = 3;
     static constexpr std::size_t ColorComponents = 3;
+    static constexpr std::size_t SizeComponents = 1;
 
 
     Geometry(const std::vector<float>& vertices, std::size_t floatsPerVertex, PrimitiveType primitiveType);

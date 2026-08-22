@@ -70,13 +70,13 @@ Geometry GeometryBuilder::makeCube(){
 
 Geometry GeometryBuilder::makePoints(){
     std::vector<float> vertices = {
-        // position          // colour
-        -0.8f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,
-        -0.4f,  0.2f, 0.0f,   0.0f, 1.0f, 0.0f,
-         0.0f, -0.1f, 0.0f,   0.0f, 0.0f, 1.0f,
-         0.4f,  0.4f, 0.0f,   1.0f, 1.0f, 0.0f,
-         0.8f, -0.3f, 0.0f,   1.0f, 0.0f, 1.0f
+        // position          // colour          // size
+        -0.8f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   0.15f,
+        -0.4f,  0.2f, 0.0f,   0.0f, 1.0f, 0.0f,   0.30f,
+         0.0f, -0.1f, 0.0f,   0.0f, 0.0f, 1.0f,   0.20f,
+         0.4f,  0.4f, 0.0f,   1.0f, 1.0f, 0.0f,   0.40f,
+         0.8f, -0.3f, 0.0f,   1.0f, 0.0f, 1.0f,   0.10f
     };
 
-    return Geometry(vertices, 6, PrimitiveType::Points);
+    return Geometry(vertices, 7, PrimitiveType::Points);
 }
