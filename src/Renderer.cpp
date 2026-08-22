@@ -9,12 +9,14 @@
 
 Renderer::Renderer() :
     m_shader("shaders/basic.vert", "shaders/basic.frag"),
-    m_vertexCount(0),
+    m_indexCount(0),
     m_vao(0),
-    m_vbo(0){
+    m_vbo(0),
+    m_ebo(0){
 
     glGenVertexArrays(1, &m_vao);
     glGenBuffers(1, &m_vbo);
+    glGenBuffers(1, &m_ebo);
 
     glEnable(GL_DEPTH_TEST);
 }
@@ -22,12 +24,14 @@ Renderer::Renderer() :
 Renderer::~Renderer(){
     glDeleteVertexArrays(1, &m_vao);
     glDeleteBuffers(1, &m_vbo);
+    glDeleteBuffers(1, &m_ebo);
 }
 
 void Renderer::upload(const Geometry& geometry){
     const auto& vertices = geometry.vertices();
+    const auto& indices = geometry.indices();
 
-    m_vertexCount = geometry.vertexCount();
+    m_indexCount = geometry.indexCount();
 
     glBindVertexArray(m_vao);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
@@ -36,6 +40,15 @@ void Renderer::upload(const Geometry& geometry){
         GL_ARRAY_BUFFER,
         vertices.size() * sizeof(float),
         vertices.data(),
+        GL_STATIC_DRAW
+    );
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+
+    glBufferData(
+        GL_ELEMENT_ARRAY_BUFFER,
+        indices.size() * sizeof(unsigned int),
+        indices.data(),
         GL_STATIC_DRAW
     );
 
@@ -83,10 +96,11 @@ void Renderer::render(float aspectRatio, const glm::mat4& view){
 
     glBindVertexArray(m_vao);
 
-    glDrawArrays(
+    glDrawElements(
         GL_TRIANGLES,
-        0,
-        m_vertexCount
+        m_indexCount,
+        GL_UNSIGNED_INT,
+        nullptr
     );
 
     glBindVertexArray(0);

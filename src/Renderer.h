@@ -17,7 +17,9 @@ public:
 private:
     unsigned int m_vao;
     unsigned int m_vbo;
-    std::size_t m_vertexCount;
+    unsigned int m_ebo;
+
+    std::size_t m_indexCount;
 
     Shader m_shader;
 };
