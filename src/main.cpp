@@ -3,7 +3,7 @@
 #include <glad/gl.h>
 
 #include "Camera.h"
-#include "Geometry.h"
+#include "GeometryBuilder.h"
 #include "Renderer.h"
 
 #include <iostream>
@@ -58,63 +58,9 @@ int main(){
     }
 
     {
-        std::vector<float> cubeVertices = {
-            // Front face
-            -0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
-             0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
-        
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
-            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
-            -0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f,
-        
-            // Back face
-            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-             0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-             0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-        
-             0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-        
-            // Left face
-            -0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
-            -0.5f,  0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
-        
-            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
-        
-            // Right face
-             0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 0.0f,
-             0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-             0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-        
-             0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-             0.5f, -0.5f,  0.5f, 1.0f, 1.0f, 0.0f,
-             0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 0.0f,
-        
-            // Bottom face
-            -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f,
-             0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f,
-             0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 1.0f,
-        
-             0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f,
-        
-            // Top face
-            -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
-             0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
-             0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-        
-             0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-            -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 1.0f
-        };
 
-        Geometry cube(cubeVertices, 6);
+        Geometry cube = GeometryBuilder::makeCube();
+
         Renderer renderer;
         Camera camera;
 
