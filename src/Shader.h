@@ -14,6 +14,8 @@ public:
 
     void setMat4(const std::string& name, const glm::mat4& value) const;
 
+    void setBool(const std::string& name, bool value) const;
+
 private:
     unsigned int m_id;
 };

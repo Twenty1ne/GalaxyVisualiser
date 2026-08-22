@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include "Geometry.h"
 
 #include <glad/gl.h>
 
@@ -100,6 +101,8 @@ void Renderer::render(float aspectRatio, const glm::mat4& view){
     );
 
     m_shader.setMat4("projection", projection);
+
+    m_shader.setBool("isPoint", m_primitiveType == PrimitiveType::Points);
 
     glBindVertexArray(m_vao);
 
