@@ -9,7 +9,9 @@
 #include <glm/trigonometric.hpp>
 
 Renderer::Renderer() :
-    m_shader("shaders/basic.vert", "shaders/basic.frag"){
+    m_pointShader("shaders/point.vert", "shaders/point.frag"),
+    m_lineShader("shaders/line.vert", "shaders/line.frag"),
+    m_triangleShader("shaders/triangle.vert", "shaders/triangle.frag"){
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_PROGRAM_POINT_SIZE);
 }
@@ -110,12 +112,33 @@ std::size_t Renderer::upload(const Geometry& geometry){
 void Renderer::render(std::size_t geometryId, float aspectRatio, const glm::mat4& view){
     const GpuGeometry& geometry = m_geometries.at(geometryId);
 
-    m_shader.use();
+    const Shader* shader = nullptr;
+
+    GLenum drawMode = GL_POINTS;
+
+    switch(geometry.primitiveType){
+        case PrimitiveType::Points:
+            shader = &m_pointShader;
+            drawMode = GL_POINTS;
+            break;
+
+        case PrimitiveType::Lines:
+            shader = &m_lineShader;
+            drawMode = GL_LINES;
+            break;
+
+        case PrimitiveType::Triangles:
+            shader = &m_triangleShader;
+            drawMode = GL_TRIANGLES;
+            break;
+    }
+
+    shader->use();
 
     glm::mat4 model(1.0f);
 
-    m_shader.setMat4("model", model);
-    m_shader.setMat4("view", view);
+    shader->setMat4("model", model);
+    shader->setMat4("view", view);
 
     glm::mat4 projection = glm::perspective(
         glm::radians(45.0f),
@@ -124,32 +147,23 @@ void Renderer::render(std::size_t geometryId, float aspectRatio, const glm::mat4
         100.0f
     );
 
-    m_shader.setMat4("projection", projection);
-
-    m_shader.setBool("isPoint", geometry.primitiveType == PrimitiveType::Points);
+    shader->setMat4("projection", projection);
 
     glBindVertexArray(geometry.vao);
 
-    if(geometry.primitiveType == PrimitiveType::Points){
-        glDrawArrays(
-            GL_POINTS,
-            0,
-            geometry.vertexCount
-        );
-    }
-    else if(geometry.primitiveType == PrimitiveType::Lines){
-        glDrawArrays(
-            GL_LINES,
-            0,
-            geometry.vertexCount
-        );
-    }
-    else if(geometry.primitiveType == PrimitiveType::Triangles){
+    if(geometry.primitiveType == PrimitiveType::Triangles){
         glDrawElements(
-            GL_TRIANGLES,
+            drawMode,
             geometry.indexCount,
             GL_UNSIGNED_INT,
             nullptr
+        );
+    }
+    else{
+        glDrawArrays(
+            drawMode,
+            0,
+            geometry.vertexCount
         );
     }
 

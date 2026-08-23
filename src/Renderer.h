@@ -29,5 +29,7 @@ private:
 
     std::vector<GpuGeometry> m_geometries;
 
-    Shader m_shader;
+    Shader m_pointShader;
+    Shader m_lineShader;
+    Shader m_triangleShader;
 };
