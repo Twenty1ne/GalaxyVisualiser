@@ -1,5 +1,25 @@
 #include "GeometryBuilder.h"
 
+Geometry GeometryBuilder::makePoints(const std::vector<Point>& points){
+    std::vector<float> vertices;
+
+    vertices.reserve(points.size() * 7);
+
+    for(const Point& point : points){
+        vertices.push_back(point.position.x);
+        vertices.push_back(point.position.y);
+        vertices.push_back(point.position.z);
+
+        vertices.push_back(point.color.r);
+        vertices.push_back(point.color.g);
+        vertices.push_back(point.color.b);
+
+        vertices.push_back(point.size);
+    }
+
+    return Geometry(vertices, 7, PrimitiveType::Points);
+}
+
 Geometry GeometryBuilder::makeCube(){
     std::vector<float> vertices = {
         // Front face
@@ -66,19 +86,6 @@ Geometry GeometryBuilder::makeCube(){
     };
 
     return Geometry(vertices, 6, indices, PrimitiveType::Triangles);
-}
-
-Geometry GeometryBuilder::makePoints(){
-    std::vector<float> vertices = {
-        // position          // colour          // size
-        -0.8f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   0.15f,
-        -0.4f,  0.2f, 0.0f,   0.0f, 1.0f, 0.0f,   0.30f,
-         0.0f, -0.1f, 0.0f,   0.0f, 0.0f, 1.0f,   0.20f,
-         0.4f,  0.4f, 0.0f,   1.0f, 1.0f, 0.0f,   0.40f,
-         0.8f, -0.3f, 0.0f,   1.0f, 0.0f, 1.0f,   0.10f
-    };
-
-    return Geometry(vertices, 7, PrimitiveType::Points);
 }
 
 Geometry GeometryBuilder::makeAxes(){

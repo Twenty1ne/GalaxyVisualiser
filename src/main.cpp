@@ -4,6 +4,7 @@
 
 #include "Camera.h"
 #include "GeometryBuilder.h"
+#include "Point.h"
 #include "Renderer.h"
 #include "Scene.h"
 
@@ -61,8 +62,35 @@ int main(){
     }
 
     {
+        std::vector<Point> points = {
+            {
+                {-0.8f, -0.5f, 0.0f},
+                {1.0f, 0.0f, 0.0f},
+                0.15f
+            },
+            {
+                {-0.4f, 0.2f, 0.0f},
+                {0.0f, 1.0f, 0.0f},
+                0.30f
+            },
+            {
+                {0.0f, -0.1f, 0.0f},
+                {0.0f, 0.0f, 1.0f},
+                0.20f
+            },
+            {
+                {0.4f, 0.4f, 0.0f},
+                {1.0f, 1.0f, 0.0f},
+                0.40f
+            },
+            {
+                {0.8f, -0.3f, 0.0f},
+                {1.0f, 0.0f, 1.0f},
+                0.10f
+            }
+        };
 
-        Geometry cube = GeometryBuilder::makePoints();
+        Geometry pointGeometry = GeometryBuilder::makePoints(points);
         Geometry axes = GeometryBuilder::makeAxes();
         Geometry grid = GeometryBuilder::makeGrid();
 
@@ -70,7 +98,7 @@ int main(){
         Camera camera;
         Scene scene;
 
-        scene.addGeometry(renderer.upload(cube));
+        scene.addGeometry(renderer.upload(pointGeometry));
         scene.addGeometry(renderer.upload(axes));
         scene.addGeometry(renderer.upload(grid));
 
