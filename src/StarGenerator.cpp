@@ -193,26 +193,11 @@ float StarGenerator::siteTheta(
            deltaTheta;
 }
 
-std::vector<Point> StarGenerator::generate(const SimulationCell& cell){
-    std::vector<Point> points;
-
-    const float thetaOffset =
-        cell.ring == 0
-            ? 0.0f
-            : calculateThetaOffset(cell.ring);
-
-    float theta = cell.theta;
-
-    // The input theta represents the site's centre.
-    // We don't alter it here; this function simply
-    // uses it to determine the site's boundaries.
-
-    (void)thetaOffset;
-
-    addPopulation(
+std::vector<Point> StarGenerator::generate(const SimulationCell& cell, std::vector<Point>& points){
+        addPopulation(
         points,
         cell.ring,
-        theta,
+        cell.theta,
         cell.highMass,
         highMassColour
     );
@@ -220,7 +205,7 @@ std::vector<Point> StarGenerator::generate(const SimulationCell& cell){
     addPopulation(
         points,
         cell.ring,
-        theta,
+        cell.theta,
         cell.lowMass,
         lowMassColour
     );

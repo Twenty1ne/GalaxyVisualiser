@@ -66,20 +66,11 @@ int main(){
     }
 
     {
-        std::vector<SimulationCell> cells = GalaxyData::loadFirstTimestep("MBSOGM_III_history.txt");
-        
-        std::cout << "Loaded " << cells.size() << " cells\n";
-
+        std::vector<SimulationCell> cells = GalaxyData::loadFirstTimestep("test.txt");
         std::vector<Point> points;
 
         for(const SimulationCell& cell : cells){
-            std::vector<Point> cellPoints = StarGenerator::generate(cell);
-
-            points.insert(
-                points.end(),
-                cellPoints.begin(),
-                cellPoints.end()
-            );
+            StarGenerator::generate(cell, points);
         }
 
         Geometry pointGeometry = GeometryBuilder::makePoints(points);
