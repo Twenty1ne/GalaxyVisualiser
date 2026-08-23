@@ -193,10 +193,7 @@ float StarGenerator::siteTheta(
            deltaTheta;
 }
 
-std::vector<Point> StarGenerator::generate(
-    const SimulationCell& cell
-)
-{
+std::vector<Point> StarGenerator::generate(const SimulationCell& cell){
     std::vector<Point> points;
 
     const float thetaOffset =

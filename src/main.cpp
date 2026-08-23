@@ -8,8 +8,9 @@
 #include "Renderer.h"
 #include "Scene.h"
 
-#include "star/SimulationCell.h"
-#include "star/StarGenerator.h"
+#include "SimulationCell.h"
+#include "StarGenerator.h"
+#include "GalaxyData.h"
 
 #include <glm/mat4x4.hpp>
 
@@ -65,14 +66,21 @@ int main(){
     }
 
     {
-        SimulationCell testCell{
-            5,
-            StarGenerator::siteTheta(5, 0),
-            300.0f,
-            100.0f
-        };
+        std::vector<SimulationCell> cells = GalaxyData::loadFirstTimestep("MBSOGM_III_history.txt");
+        
+        std::cout << "Loaded " << cells.size() << " cells\n";
 
-        std::vector<Point> points = StarGenerator::generate(testCell);
+        std::vector<Point> points;
+
+        for(const SimulationCell& cell : cells){
+            std::vector<Point> cellPoints = StarGenerator::generate(cell);
+
+            points.insert(
+                points.end(),
+                cellPoints.begin(),
+                cellPoints.end()
+            );
+        }
 
         Geometry pointGeometry = GeometryBuilder::makePoints(points);
         Geometry axes = GeometryBuilder::makeAxes();
@@ -122,7 +130,7 @@ int main(){
                 previousCameraControlActive
             );
 
-            glClearColor(0.5f, 0.1f, 0.2f, 1.0f);
+            glClearColor(0.0f, 0.0, 0.0, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             int width;
