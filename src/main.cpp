@@ -8,6 +8,9 @@
 #include "Renderer.h"
 #include "Scene.h"
 
+#include "star/SimulationCell.h"
+#include "star/StarGenerator.h"
+
 #include <glm/mat4x4.hpp>
 
 #include <iostream>
@@ -62,33 +65,14 @@ int main(){
     }
 
     {
-        std::vector<Point> points = {
-            {
-                {-0.8f, -0.5f, 0.0f},
-                {1.0f, 0.0f, 0.0f},
-                0.15f
-            },
-            {
-                {-0.4f, 0.2f, 0.0f},
-                {0.0f, 1.0f, 0.0f},
-                0.30f
-            },
-            {
-                {0.0f, -0.1f, 0.0f},
-                {0.0f, 0.0f, 1.0f},
-                0.20f
-            },
-            {
-                {0.4f, 0.4f, 0.0f},
-                {1.0f, 1.0f, 0.0f},
-                0.40f
-            },
-            {
-                {0.8f, -0.3f, 0.0f},
-                {1.0f, 0.0f, 1.0f},
-                0.10f
-            }
+        SimulationCell testCell{
+            5,
+            StarGenerator::siteTheta(5, 0),
+            300.0f,
+            100.0f
         };
+
+        std::vector<Point> points = StarGenerator::generate(testCell);
 
         Geometry pointGeometry = GeometryBuilder::makePoints(points);
         Geometry axes = GeometryBuilder::makeAxes();

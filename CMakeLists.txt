@@ -18,6 +18,7 @@ add_executable(galaxy_viewer
     src/Renderer.cpp
     src/Scene.cpp
     src/Shader.cpp
+    src/star/StarGenerator.cpp
     external/glad/src/gl.c
 )
 
