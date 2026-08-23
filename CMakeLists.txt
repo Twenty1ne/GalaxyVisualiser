@@ -16,6 +16,7 @@ add_executable(galaxy_viewer
     src/Geometry.cpp
     src/GeometryBuilder.cpp
     src/Renderer.cpp
+    src/Scene.cpp
     src/Shader.cpp
     external/glad/src/gl.c
 )

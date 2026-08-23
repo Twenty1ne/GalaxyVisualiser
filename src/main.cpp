@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "GeometryBuilder.h"
 #include "Renderer.h"
+#include "Scene.h"
 
 #include <glm/mat4x4.hpp>
 
@@ -67,10 +68,11 @@ int main(){
 
         Renderer renderer;
         Camera camera;
+        Scene scene;
 
-        std::size_t cubeId = renderer.upload(cube);
-        std::size_t axesId = renderer.upload(axes);
-        std::size_t gridId = renderer.upload(grid);
+        scene.addGeometry(renderer.upload(cube));
+        scene.addGeometry(renderer.upload(axes));
+        scene.addGeometry(renderer.upload(grid));
 
         double lastMouseX;
         double lastMouseY;
@@ -124,9 +126,7 @@ int main(){
 
             glm::mat4 view = camera.viewMatrix();
 
-            renderer.render(cubeId, aspectRatio, view);
-            renderer.render(axesId, aspectRatio, view);
-            renderer.render(gridId, aspectRatio, view);
+            scene.render(renderer, aspectRatio, view);
 
             glfwSwapBuffers(window);
         }
