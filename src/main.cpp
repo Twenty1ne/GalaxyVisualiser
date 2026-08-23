@@ -92,7 +92,7 @@ int main(){
 
         Geometry pointGeometry = GeometryBuilder::makePoints(points);
         Geometry axes = GeometryBuilder::makeAxes();
-        Geometry grid = GeometryBuilder::makeGrid();
+        Geometry grid = GeometryBuilder::makeSimulationGrid();
 
         Renderer renderer;
         Camera camera;

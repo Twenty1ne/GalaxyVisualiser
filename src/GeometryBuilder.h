@@ -12,4 +12,6 @@ public:
     static Geometry makeAxes();
 
     static Geometry makeGrid();
+
+    static Geometry makeSimulationGrid();
 };
