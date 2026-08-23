@@ -5,24 +5,29 @@
 
 #include <cstddef>
 #include <glm/mat4x4.hpp>
+#include <vector>
 
 class Renderer{
 public:
     Renderer();
     ~Renderer();
 
-    void upload(const Geometry& geometry);
-    void render(float aspectRatio, const glm::mat4& view);
+    std::size_t upload(const Geometry& geometry);
+    void render(std::size_t geometryId, float aspectRatio, const glm::mat4& view);
 
 private:
-    unsigned int m_vao;
-    unsigned int m_vbo;
-    unsigned int m_ebo;
+    struct GpuGeometry{
+        unsigned int vao;
+        unsigned int vbo;
+        unsigned int ebo;
 
-    std::size_t m_indexCount;
-    std::size_t m_vertexCount;
+        std::size_t indexCount;
+        std::size_t vertexCount;
 
-    PrimitiveType m_primitiveType;
+        PrimitiveType primitiveType;
+    };
+
+    std::vector<GpuGeometry> m_geometries;
 
     Shader m_shader;
 };

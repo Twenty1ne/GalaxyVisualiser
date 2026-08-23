@@ -5,6 +5,7 @@
 
 enum class PrimitiveType{
     Points,
+    Lines,
     Triangles
 };
 

@@ -9,38 +9,41 @@
 #include <glm/trigonometric.hpp>
 
 Renderer::Renderer() :
-    m_shader("shaders/basic.vert", "shaders/basic.frag"),
-    m_primitiveType(PrimitiveType::Triangles),
-    m_indexCount(0),
-    m_vertexCount(0),
-    m_vao(0),
-    m_vbo(0),
-    m_ebo(0){
-
-    glGenVertexArrays(1, &m_vao);
-    glGenBuffers(1, &m_vbo);
-    glGenBuffers(1, &m_ebo);
-
+    m_shader("shaders/basic.vert", "shaders/basic.frag"){
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_PROGRAM_POINT_SIZE);
 }
 
 Renderer::~Renderer(){
-    glDeleteVertexArrays(1, &m_vao);
-    glDeleteBuffers(1, &m_vbo);
-    glDeleteBuffers(1, &m_ebo);
+    for(const GpuGeometry& geometry : m_geometries){
+        glDeleteVertexArrays(1, &geometry.vao);
+        glDeleteBuffers(1, &geometry.vbo);
+
+        if(geometry.ebo != 0){
+            glDeleteBuffers(1, &geometry.ebo);
+        }
+    }
 }
 
-void Renderer::upload(const Geometry& geometry){
+std::size_t Renderer::upload(const Geometry& geometry){
+    GpuGeometry gpuGeometry{};
+
+    gpuGeometry.vao = 0;
+    gpuGeometry.vbo = 0;
+    gpuGeometry.ebo = 0;
+
+    gpuGeometry.indexCount = geometry.indexCount();
+    gpuGeometry.vertexCount = geometry.vertexCount();
+    gpuGeometry.primitiveType = geometry.primitiveType();
+
     const auto& vertices = geometry.vertices();
     const auto& indices = geometry.indices();
 
-    m_indexCount = geometry.indexCount();
-    m_vertexCount = geometry.vertexCount();
-    m_primitiveType = geometry.primitiveType();
+    glGenVertexArrays(1, &gpuGeometry.vao);
+    glGenBuffers(1, &gpuGeometry.vbo);
 
-    glBindVertexArray(m_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+    glBindVertexArray(gpuGeometry.vao);
+    glBindBuffer(GL_ARRAY_BUFFER, gpuGeometry.vbo);
 
     glBufferData(
         GL_ARRAY_BUFFER,
@@ -50,7 +53,9 @@ void Renderer::upload(const Geometry& geometry){
     );
 
     if(!indices.empty()){
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+        glGenBuffers(1, &gpuGeometry.ebo);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gpuGeometry.ebo);
 
         glBufferData(
             GL_ELEMENT_ARRAY_BUFFER,
@@ -96,9 +101,15 @@ void Renderer::upload(const Geometry& geometry){
     }
 
     glBindVertexArray(0);
+
+    m_geometries.push_back(gpuGeometry);
+
+    return m_geometries.size() - 1;
 }
 
-void Renderer::render(float aspectRatio, const glm::mat4& view){
+void Renderer::render(std::size_t geometryId, float aspectRatio, const glm::mat4& view){
+    const GpuGeometry& geometry = m_geometries.at(geometryId);
+
     m_shader.use();
 
     glm::mat4 model(1.0f);
@@ -115,21 +126,28 @@ void Renderer::render(float aspectRatio, const glm::mat4& view){
 
     m_shader.setMat4("projection", projection);
 
-    m_shader.setBool("isPoint", m_primitiveType == PrimitiveType::Points);
+    m_shader.setBool("isPoint", geometry.primitiveType == PrimitiveType::Points);
 
-    glBindVertexArray(m_vao);
+    glBindVertexArray(geometry.vao);
 
-    if(m_primitiveType == PrimitiveType::Points){
+    if(geometry.primitiveType == PrimitiveType::Points){
         glDrawArrays(
             GL_POINTS,
             0,
-            m_vertexCount
+            geometry.vertexCount
         );
     }
-    else if(m_primitiveType == PrimitiveType::Triangles){
+    else if(geometry.primitiveType == PrimitiveType::Lines){
+        glDrawArrays(
+            GL_LINES,
+            0,
+            geometry.vertexCount
+        );
+    }
+    else if(geometry.primitiveType == PrimitiveType::Triangles){
         glDrawElements(
             GL_TRIANGLES,
-            m_indexCount,
+            geometry.indexCount,
             GL_UNSIGNED_INT,
             nullptr
         );

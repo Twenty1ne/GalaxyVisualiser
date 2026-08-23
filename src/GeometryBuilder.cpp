@@ -80,3 +80,63 @@ Geometry GeometryBuilder::makePoints(){
 
     return Geometry(vertices, 7, PrimitiveType::Points);
 }
+
+Geometry GeometryBuilder::makeAxes(){
+    std::vector<float> vertices = {
+        // X axis
+        0.0f, 0.0f, 0.0f,   1.0f, 0.0f, 0.0f,
+        5.0f, 0.0f, 0.0f,   1.0f, 0.0f, 0.0f,
+
+        // Y axis
+        0.0f, 0.0f, 0.0f,   0.0f, 1.0f, 0.0f,
+        0.0f, 5.0f, 0.0f,   0.0f, 1.0f, 0.0f,
+
+        // Z axis
+        0.0f, 0.0f, 0.0f,   0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 5.0f,   0.0f, 0.0f, 1.0f
+    };
+
+    return Geometry(vertices, 6, PrimitiveType::Lines);
+}
+
+Geometry GeometryBuilder::makeGrid(){
+    std::vector<float> vertices;
+
+    const float gridMin = -5.0f;
+    const float gridMax = 5.0f;
+    const float gridStep = 1.0f;
+
+    const float gridColorR = 0.25f;
+    const float gridColorG = 0.25f;
+    const float gridColorB = 0.25f;
+
+    for(float x = gridMin; x <= gridMax; x += gridStep){
+        // Line parallel to the Z axis.
+        vertices.insert(
+            vertices.end(),
+            {
+                x, 0.0f, gridMin,
+                gridColorR, gridColorG, gridColorB,
+
+                x, 0.0f, gridMax,
+                gridColorR, gridColorG, gridColorB
+            }
+        );
+    }
+
+    for(float z = gridMin; z <= gridMax; z += gridStep){
+        // Line parallel to the X axis.
+        vertices.insert(
+            vertices.end(),
+            {
+                gridMin, 0.0f, z,
+                gridColorR, gridColorG, gridColorB,
+
+                gridMax, 0.0f, z,
+                gridColorR, gridColorG, gridColorB
+            }
+        );
+    }
+
+    return Geometry(vertices, 6, PrimitiveType::Lines);
+}

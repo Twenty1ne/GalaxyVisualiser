@@ -6,6 +6,8 @@
 #include "GeometryBuilder.h"
 #include "Renderer.h"
 
+#include <glm/mat4x4.hpp>
+
 #include <iostream>
 #include <vector>
 
@@ -59,12 +61,16 @@ int main(){
 
     {
 
-        Geometry points = GeometryBuilder::makePoints();
+        Geometry cube = GeometryBuilder::makePoints();
+        Geometry axes = GeometryBuilder::makeAxes();
+        Geometry grid = GeometryBuilder::makeGrid();
 
         Renderer renderer;
         Camera camera;
 
-        renderer.upload(points);
+        std::size_t cubeId = renderer.upload(cube);
+        std::size_t axesId = renderer.upload(axes);
+        std::size_t gridId = renderer.upload(grid);
 
         double lastMouseX;
         double lastMouseY;
@@ -116,7 +122,11 @@ int main(){
 
             float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 
-            renderer.render(aspectRatio, camera.viewMatrix());
+            glm::mat4 view = camera.viewMatrix();
+
+            renderer.render(cubeId, aspectRatio, view);
+            renderer.render(axesId, aspectRatio, view);
+            renderer.render(gridId, aspectRatio, view);
 
             glfwSwapBuffers(window);
         }

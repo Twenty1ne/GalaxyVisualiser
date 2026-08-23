@@ -7,4 +7,8 @@ public:
     static Geometry makeCube();
 
     static Geometry makePoints();
+
+    static Geometry makeAxes();
+
+    static Geometry makeGrid();
 };
