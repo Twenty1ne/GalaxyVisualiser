@@ -66,10 +66,13 @@ int main(){
     }
 
     {
-        std::vector<SimulationCell> cells = GalaxyData::loadFirstTimestep("test.txt");
+        int currentTimestep = 10;
+
+        std::vector<std::vector<SimulationCell>> timesteps = GalaxyData::load("/home/tj/code/thesis/MBSOGM_III_history.txt");
+        std::cout << timesteps.size();
         std::vector<Point> points;
 
-        for(const SimulationCell& cell : cells){
+        for(const SimulationCell& cell : timesteps[currentTimestep]){
             StarGenerator::generate(cell, points);
         }
 

@@ -7,5 +7,5 @@
 
 class GalaxyData{
 public:
-    static std::vector<SimulationCell> loadFirstTimestep(const std::string filename);
+    static std::vector<std::vector<SimulationCell>> load(const std::string filename);
 };

@@ -9,7 +9,7 @@ namespace
     constexpr float pi = 3.14159265358979323846f;
 
     // How much simulated mass corresponds to one rendered star.
-    constexpr float massPerStar = 10.0f;
+    constexpr float massPerStar = 500.0f;
 
     // Visual size of one rendered star.
     constexpr float starSize = 0.08f;
