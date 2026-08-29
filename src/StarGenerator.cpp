@@ -1,6 +1,7 @@
 #include "StarGenerator.h"
 
-#include <algorithm>
+#include "StellarPopulation.h"
+
 #include <cmath>
 #include <random>
 
@@ -8,11 +9,18 @@ namespace
 {
     constexpr float pi = 3.14159265358979323846f;
 
-    // How much simulated mass corresponds to one rendered star.
-    constexpr float massPerStar = 500.0f;
+    constexpr float powerLawExponent = 2.35f;
 
-    // Visual size of one rendered star.
-    constexpr float starSize = 0.08f;
+    constexpr float highMassMinimum = 8.0f;
+    constexpr float highMassMaximum = 100.0f;
+
+    constexpr float lowMassMinimum = 1.0f;
+    constexpr float lowMassMaximum = 7.0f;
+
+    constexpr int lowMassStarsPerPoint = 50;
+
+    constexpr float highMassSizeScale = 0.08f;
+    constexpr float lowMassSizeScale = 0.03;
 
     // Small variation in where stars appear along the Y axis.
     constexpr float halfDepth = 0.5f;
@@ -136,40 +144,31 @@ namespace
         std::vector<Point>& points,
         int ring,
         float theta,
-        float mass,
-        const glm::vec3& colour
+        const std::vector<StellarRepresentation>& population,
+        const glm::vec3& colour,
+        float sizeScale
     )
     {
-        if (mass <= 0.0f)
-        {
-            return;
-        }
-
-        const int starCount =
-            std::max(
-                1,
-                static_cast<int>(
-                    std::round(mass / massPerStar)
-                )
-            );
-
-        for (int i = 0; i < starCount; ++i)
+        for (const StellarRepresentation& star : population)
         {
             Point point;
-
+    
             point.position =
                 randomPositionInCell(
                     ring,
                     theta
                 );
-
+    
             point.color = colour;
-
-            point.size = starSize;
-
+    
+            point.size =
+                sizeScale *
+                std::cbrt(star.representedMass);
+    
             points.push_back(point);
         }
     }
+
 }
 
 float StarGenerator::siteTheta(
@@ -194,20 +193,41 @@ float StarGenerator::siteTheta(
 }
 
 std::vector<Point> StarGenerator::generate(const SimulationCell& cell, std::vector<Point>& points){
-        addPopulation(
-        points,
-        cell.ring,
-        cell.theta,
-        cell.highMass,
-        highMassColour
-    );
+    const std::vector<StellarRepresentation> highMassPopulation =
+        StellarPopulation::generateHighMassPopulation(
+            cell.highMass,
+            highMassMinimum,
+            highMassMaximum,
+            powerLawExponent
+        );
 
+    const std::vector<StellarRepresentation> lowMassPopulation =
+        StellarPopulation::generateLowMassPopulation(
+            cell.lowMass,
+            lowMassMinimum,
+            lowMassMaximum,
+            powerLawExponent,
+            lowMassStarsPerPoint
+        );
+
+    // High mass stars rendered individually
     addPopulation(
         points,
         cell.ring,
         cell.theta,
-        cell.lowMass,
-        lowMassColour
+        highMassPopulation,
+        highMassColour,
+        highMassSizeScale
+    );
+
+    // Low mass stars grouped into batches of lowMassStarsPerPoint before rendering
+    addPopulation(
+        points,
+        cell.ring,
+        cell.theta,
+        lowMassPopulation,
+        lowMassColour,
+        lowMassSizeScale
     );
 
     return points;

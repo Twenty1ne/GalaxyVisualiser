@@ -66,7 +66,7 @@ int main(){
     }
 
     {
-        int currentTimestep = 10;
+        int currentTimestep = 30;
 
         std::vector<std::vector<SimulationCell>> timesteps = GalaxyData::load("/home/tj/code/thesis/MBSOGM_III_history.txt");
         std::cout << timesteps.size();
