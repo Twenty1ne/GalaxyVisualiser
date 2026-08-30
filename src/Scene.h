@@ -8,10 +8,15 @@
 
 class Scene{
 public:
-    std::size_t addGeometry(std::size_t geometryId);
+    std::size_t addGeometry(std::size_t geometryId, bool glow = false);
 
     void render(Renderer& renderer, float aspectRatio, const glm::mat4& view) const;
 
 private:
-    std::vector<std::size_t> m_geometryIds;
+    struct SceneGeometry{
+        std::size_t geometryId;
+        bool glow;
+    };
+
+    std::vector<SceneGeometry> m_geometryIds;
 };

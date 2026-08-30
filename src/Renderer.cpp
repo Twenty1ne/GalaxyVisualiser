@@ -14,6 +14,8 @@ Renderer::Renderer() :
     m_triangleShader("shaders/triangle.vert", "shaders/triangle.frag"){
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_PROGRAM_POINT_SIZE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 }
 
 Renderer::~Renderer(){
@@ -109,7 +111,7 @@ std::size_t Renderer::upload(const Geometry& geometry){
     return m_geometries.size() - 1;
 }
 
-void Renderer::render(std::size_t geometryId, float aspectRatio, const glm::mat4& view){
+void Renderer::render(std::size_t geometryId, float aspectRatio, const glm::mat4& view, bool glow){
     const GpuGeometry& geometry = m_geometries.at(geometryId);
 
     const Shader* shader = nullptr;
@@ -149,6 +151,14 @@ void Renderer::render(std::size_t geometryId, float aspectRatio, const glm::mat4
 
     shader->setMat4("projection", projection);
 
+    if(geometry.primitiveType == PrimitiveType::Points){
+        shader->setBool("glow", glow);
+    }
+
+    if(glow){
+        glDepthMask(GL_FALSE);
+    }
+
     glBindVertexArray(geometry.vao);
 
     if(geometry.primitiveType == PrimitiveType::Triangles){
@@ -168,4 +178,8 @@ void Renderer::render(std::size_t geometryId, float aspectRatio, const glm::mat4
     }
 
     glBindVertexArray(0);
+
+    if(glow){
+        glDepthMask(GL_TRUE);
+    }
 }

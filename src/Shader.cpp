@@ -93,3 +93,7 @@ void Shader::setMat4(const std::string& name, const glm::mat4& value) const{
         glm::value_ptr(value)
     );
 }
+
+void Shader::setBool(const std::string& name, bool value) const {
+    glUniform1i(glGetUniformLocation(m_id, name.c_str()), value ? 1 : 0);
+}

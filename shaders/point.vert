@@ -7,6 +7,7 @@ layout (location = 2) in float aSize;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform bool glow;
 
 out vec3 vertexColor;
 
@@ -17,5 +18,11 @@ void main(){
 
     vertexColor = aColor;
 
-    gl_PointSize = - aSize / viewPosition.z * 500.0;
+    float pointSize = - aSize / viewPosition.z * 500.0;
+
+    if(glow){
+        pointSize *= 3;
+    }
+
+    gl_PointSize = pointSize;
 }

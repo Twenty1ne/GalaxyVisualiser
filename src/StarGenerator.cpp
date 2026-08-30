@@ -192,7 +192,7 @@ float StarGenerator::siteTheta(
            deltaTheta;
 }
 
-std::vector<Point> StarGenerator::generate(const SimulationCell& cell, std::vector<Point>& points){
+void StarGenerator::generate(const SimulationCell& cell, std::vector<Point>& highMassPoints, std::vector<Point>& lowMassPoints){
     const std::vector<StellarRepresentation> highMassPopulation =
         StellarPopulation::generateHighMassPopulation(
             cell.highMass,
@@ -212,7 +212,7 @@ std::vector<Point> StarGenerator::generate(const SimulationCell& cell, std::vect
 
     // High mass stars rendered individually
     addPopulation(
-        points,
+        highMassPoints,
         cell.ring,
         cell.theta,
         highMassPopulation,
@@ -222,13 +222,11 @@ std::vector<Point> StarGenerator::generate(const SimulationCell& cell, std::vect
 
     // Low mass stars grouped into batches of lowMassStarsPerPoint before rendering
     addPopulation(
-        points,
+        lowMassPoints,
         cell.ring,
         cell.theta,
         lowMassPopulation,
         lowMassColour,
         lowMassSizeScale
     );
-
-    return points;
 }

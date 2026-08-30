@@ -70,13 +70,17 @@ int main(){
 
         std::vector<std::vector<SimulationCell>> timesteps = GalaxyData::load("/home/tj/code/thesis/MBSOGM_III_history.txt");
         std::cout << timesteps.size();
-        std::vector<Point> points;
+
+        std::vector<Point> highMassPoints;
+        std::vector<Point> lowMassPoints;
 
         for(const SimulationCell& cell : timesteps[currentTimestep]){
-            StarGenerator::generate(cell, points);
+            StarGenerator::generate(cell, highMassPoints, lowMassPoints);
         }
 
-        Geometry pointGeometry = GeometryBuilder::makePoints(points);
+        Geometry highMassGeometry = GeometryBuilder::makePoints(highMassPoints);
+        Geometry lowMassGeometry = GeometryBuilder::makePoints(lowMassPoints);
+
         Geometry axes = GeometryBuilder::makeAxes();
         Geometry grid = GeometryBuilder::makeSimulationGrid();
 
@@ -84,9 +88,10 @@ int main(){
         Camera camera;
         Scene scene;
 
-        scene.addGeometry(renderer.upload(pointGeometry));
+        scene.addGeometry(renderer.upload(lowMassGeometry));
         scene.addGeometry(renderer.upload(axes));
         scene.addGeometry(renderer.upload(grid));
+        scene.addGeometry(renderer.upload(highMassGeometry), true);
 
         double lastMouseX;
         double lastMouseY;
@@ -186,7 +191,7 @@ void processInput(GLFWwindow* window, Camera& camera, float deltaTime, double& l
     lastMouseY = mouseY;
 
     const float mouseSensitivity = 0.1f;
-    const float movementSpeed = 3.0f;
+    const float movementSpeed = 7.0f;
 
     camera.rotate(
         mouseDeltaX * mouseSensitivity,
