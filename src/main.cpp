@@ -17,6 +17,9 @@
 #include <iostream>
 #include <vector>
 
+// ================
+#include <chrono>
+// ================
 void processInput(GLFWwindow* window, Camera& camera, float deltaTime, double& lastMouseX, double& lastMouseY, bool& cameraControlActive, bool& previousCameraControlActive);
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
@@ -66,20 +69,73 @@ int main(){
     }
 
     {
-        int currentTimestep = 30;
+        int currentTimestep = 100;
+
+        // ================
+        auto loadStart = std::chrono::high_resolution_clock::now();
+        // ================
 
         std::vector<std::vector<SimulationCell>> timesteps = GalaxyData::load("/home/tj/code/thesis/MBSOGM_III_history.txt");
-        std::cout << timesteps.size();
+
+        // ================
+        auto loadEnd = std::chrono::high_resolution_clock::now();
+
+        std::cout
+            << "Loaded "
+            << timesteps.size()
+            << " timesteps in "
+            << std::chrono::duration<double>(loadEnd - loadStart).count()
+            << " seconds\n";
+        // ================
 
         std::vector<Point> highMassPoints;
         std::vector<Point> lowMassPoints;
+
+        // ================
+        auto genStart = std::chrono::high_resolution_clock::now();
+        // ================
 
         for(const SimulationCell& cell : timesteps[currentTimestep]){
             StarGenerator::generate(cell, highMassPoints, lowMassPoints);
         }
 
+        // ================
+        auto genEnd = std::chrono::high_resolution_clock::now();
+
+        std::cout
+            << "\nStar generation: "
+            << std::chrono::duration<double>(genEnd - genStart).count()
+            << " seconds\n";
+
+        std::cout
+            << "Occupied sites: "
+            << timesteps[currentTimestep].size()
+            << '\n';
+
+        std::cout
+            << "High mass points: "
+            << highMassPoints.size()
+            << '\n';
+
+        std::cout
+            << "Low mass points: "
+            << lowMassPoints.size()
+            << '\n';
+
+        auto geometryStart = std::chrono::high_resolution_clock::now();
+        // ================
+
         Geometry highMassGeometry = GeometryBuilder::makePoints(highMassPoints);
         Geometry lowMassGeometry = GeometryBuilder::makePoints(lowMassPoints);
+
+        // ================
+        auto geometryEnd = std::chrono::high_resolution_clock::now();
+
+        std::cout
+            << "\nPoint geometry construction: "
+            << std::chrono::duration<double>(geometryEnd - geometryStart).count()
+            << " seconds\n";
+        // ================
 
         Geometry axes = GeometryBuilder::makeAxes();
         Geometry grid = GeometryBuilder::makeSimulationGrid();
@@ -88,10 +144,23 @@ int main(){
         Camera camera;
         Scene scene;
 
+        // ================
+        auto uploadStart = std::chrono::high_resolution_clock::now();
+        // ================
+
         scene.addGeometry(renderer.upload(lowMassGeometry));
         scene.addGeometry(renderer.upload(axes));
         scene.addGeometry(renderer.upload(grid));
         scene.addGeometry(renderer.upload(highMassGeometry), true);
+
+        // ================
+        auto uploadEnd = std::chrono::high_resolution_clock::now();
+
+        std::cout
+            << "\nGeometry upload calls: "
+            << std::chrono::duration<double>(uploadEnd - uploadStart).count()
+            << " seconds\n";
+        // ================
 
         double lastMouseX;
         double lastMouseY;
@@ -109,6 +178,10 @@ int main(){
         );
 
         double lastFrameTime = glfwGetTime();
+
+        // ================
+        bool profileFrame = true;
+        // ================
 
         while(!glfwWindowShouldClose(window)){
             glfwPollEvents();
@@ -145,7 +218,34 @@ int main(){
 
             glm::mat4 view = camera.viewMatrix();
 
-            scene.render(renderer, aspectRatio, view);
+            // ================
+            if(profileFrame){
+                auto renderStart = std::chrono::high_resolution_clock::now();
+
+                scene.render(renderer, aspectRatio, view);
+
+                auto renderSubmissionEnd = std::chrono::high_resolution_clock::now();
+
+                glFinish();
+
+                auto renderEnd = std::chrono::high_resolution_clock::now();
+
+                std::cout
+                    << "\nRender submission: "
+                    << std::chrono::duration<double>(renderSubmissionEnd - renderStart).count()
+                    << " seconds\n";
+
+                std::cout
+                    << "\nRender + GPU completion: "
+                    << std::chrono::duration<double>(renderEnd - renderStart).count()
+                    << " seconds\n";
+
+                profileFrame = false;
+            }
+            // ================
+            else{
+                scene.render(renderer, aspectRatio, view);
+            }
 
             glfwSwapBuffers(window);
         }

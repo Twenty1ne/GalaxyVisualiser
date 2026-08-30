@@ -14,10 +14,8 @@ namespace
     constexpr float highMassMinimum = 8.0f;
     constexpr float highMassMaximum = 100.0f;
 
-    constexpr float lowMassMinimum = 1.0f;
-    constexpr float lowMassMaximum = 7.0f;
-
-    constexpr int lowMassStarsPerPoint = 50;
+    constexpr float lowMassMinimum = 50.0f;
+    constexpr float lowMassMaximum = 350.0f;
 
     constexpr float highMassSizeScale = 0.08f;
     constexpr float lowMassSizeScale = 0.03;
@@ -194,20 +192,21 @@ float StarGenerator::siteTheta(
 
 void StarGenerator::generate(const SimulationCell& cell, std::vector<Point>& highMassPoints, std::vector<Point>& lowMassPoints){
     const std::vector<StellarRepresentation> highMassPopulation =
-        StellarPopulation::generateHighMassPopulation(
+        StellarPopulation::generatePopulation(
             cell.highMass,
             highMassMinimum,
             highMassMaximum,
-            powerLawExponent
+            powerLawExponent,
+            true
         );
 
     const std::vector<StellarRepresentation> lowMassPopulation =
-        StellarPopulation::generateLowMassPopulation(
+        StellarPopulation::generatePopulation(
             cell.lowMass,
             lowMassMinimum,
             lowMassMaximum,
             powerLawExponent,
-            lowMassStarsPerPoint
+            false
         );
 
     // High mass stars rendered individually

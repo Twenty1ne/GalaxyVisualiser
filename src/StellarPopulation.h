@@ -11,18 +11,11 @@ struct StellarRepresentation
 class StellarPopulation
 {
 public:
-    static std::vector<StellarRepresentation> generateHighMassPopulation(
-        float totalMass,
-        float minimumMass,
-        float maximumMass,
-        float powerLawExponent
-    );
-
-    static std::vector<StellarRepresentation> generateLowMassPopulation(
+    static std::vector<StellarRepresentation> generatePopulation(
         float totalMass,
         float minimumMass,
         float maximumMass,
         float powerLawExponent,
-        int starsPerPoint
+        bool isHighMass
     );
 };
