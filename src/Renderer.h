@@ -13,6 +13,7 @@ public:
     ~Renderer();
 
     std::size_t upload(const Geometry& geometry);
+    void update(std::size_t geometryId, const Geometry& geometry);
     void render(std::size_t geometryId, float aspectRatio, const glm::mat4& view, bool glow = false);
 
 private:

@@ -111,6 +111,37 @@ std::size_t Renderer::upload(const Geometry& geometry){
     return m_geometries.size() - 1;
 }
 
+void Renderer::update(std::size_t geometryId, const Geometry& geometry){
+    GpuGeometry& gpuGeometry = m_geometries.at(geometryId);
+
+    const auto& vertices = geometry.vertices();
+    const auto& indices = geometry.indices();
+
+    glBindBuffer(GL_ARRAY_BUFFER, gpuGeometry.vbo);
+
+    glBufferData(
+        GL_ARRAY_BUFFER,
+        vertices.size() * sizeof(float),
+        vertices.data(),
+        GL_STATIC_DRAW
+    );
+
+    if(!indices.empty()){
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gpuGeometry.ebo);
+
+        glBufferData(
+            GL_ELEMENT_ARRAY_BUFFER,
+            indices.size() * sizeof(unsigned int),
+            indices.data(),
+            GL_STATIC_DRAW
+        );
+    }
+
+    gpuGeometry.indexCount = geometry.indexCount();
+    gpuGeometry.vertexCount = geometry.vertexCount();
+    gpuGeometry.primitiveType = geometry.primitiveType();
+}
+
 void Renderer::render(std::size_t geometryId, float aspectRatio, const glm::mat4& view, bool glow){
     const GpuGeometry& geometry = m_geometries.at(geometryId);
 

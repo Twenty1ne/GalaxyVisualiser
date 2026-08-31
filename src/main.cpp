@@ -20,10 +20,23 @@
 // ================
 #include <chrono>
 // ================
+
+struct AppState{
+    bool cameraControlActive;
+
+    int currentTimestep;
+    const std::vector<std::vector<SimulationCell>>* timesteps;
+
+    Renderer* renderer;
+    std::size_t lowMassGeometryId;
+    std::size_t highMassGeometryId;
+};
+
 void processInput(GLFWwindow* window, Camera& camera, float deltaTime, double& lastMouseX, double& lastMouseY, bool& cameraControlActive, bool& previousCameraControlActive);
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void focusCallback(GLFWwindow* window, int focused);
+void loadTimestep(int timestep, const std::vector<std::vector<SimulationCell>>& timesteps, Renderer& renderer, std::size_t lowMassGeometryId, std::size_t highMassGeometryId);
 
 int main(){
     std::cout << std::endl;
@@ -46,12 +59,14 @@ int main(){
         return 1;
     }
 
-    bool cameraControlActive = true;
+    AppState appState{};
+    appState.cameraControlActive = true;
+
     bool previousCameraControlActive = true;
 
     glfwSetWindowUserPointer(
         window,
-        &cameraControlActive
+        &appState
     );
 
     glfwSetKeyCallback(window, keyCallback);
@@ -148,10 +163,13 @@ int main(){
         auto uploadStart = std::chrono::high_resolution_clock::now();
         // ================
 
-        scene.addGeometry(renderer.upload(lowMassGeometry));
+        std::size_t lowMassGeometryId = renderer.upload(lowMassGeometry);
+        std::size_t highMassGeometryId = renderer.upload(highMassGeometry);
+
+        scene.addGeometry(lowMassGeometryId);
         scene.addGeometry(renderer.upload(axes));
         scene.addGeometry(renderer.upload(grid));
-        scene.addGeometry(renderer.upload(highMassGeometry), true);
+        scene.addGeometry(highMassGeometryId, true);
 
         // ================
         auto uploadEnd = std::chrono::high_resolution_clock::now();
@@ -177,6 +195,12 @@ int main(){
             GLFW_CURSOR_DISABLED
         );
 
+        appState.currentTimestep = currentTimestep;
+        appState.timesteps = &timesteps;
+        appState.renderer = &renderer;
+        appState.lowMassGeometryId = lowMassGeometryId;
+        appState.highMassGeometryId = highMassGeometryId;
+
         double lastFrameTime = glfwGetTime();
 
         // ================
@@ -198,7 +222,7 @@ int main(){
                 deltaTime,
                 lastMouseX,
                 lastMouseY,
-                cameraControlActive,
+                appState.cameraControlActive,
                 previousCameraControlActive
             );
 
@@ -324,10 +348,10 @@ void processInput(GLFWwindow* window, Camera& camera, float deltaTime, double& l
   }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
-    if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
-        bool* cameraControlActive = static_cast<bool*>(glfwGetWindowUserPointer(window));
+    AppState* state = static_cast<AppState*>(glfwGetWindowUserPointer(window));
 
-        *cameraControlActive = false;
+    if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
+        state->cameraControlActive = false;
 
         glfwSetInputMode(
             window,
@@ -335,13 +359,41 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             GLFW_CURSOR_NORMAL
         );
     }
+
+    if(key == GLFW_KEY_PERIOD && action == GLFW_PRESS){
+        if(state->currentTimestep + 1 < static_cast<int>(state->timesteps->size())){
+            ++state->currentTimestep;
+
+            loadTimestep(
+                state->currentTimestep,
+                *state->timesteps,
+                *state->renderer,
+                state->lowMassGeometryId,
+                state->highMassGeometryId
+            );
+        }
+    }
+
+    if(key == GLFW_KEY_COMMA && action == GLFW_PRESS){
+        if(state->currentTimestep > 0){
+            --state->currentTimestep;
+
+            loadTimestep(
+                state->currentTimestep,
+                *state->timesteps,
+                *state->renderer,
+                state->lowMassGeometryId,
+                state->highMassGeometryId
+            );
+        }
+    }
 }
 
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods){
     if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS){
-        bool* cameraControlActive = static_cast<bool*>(glfwGetWindowUserPointer(window));
+        AppState* state = static_cast<AppState*>(glfwGetWindowUserPointer(window));
 
-        *cameraControlActive = true;
+        state->cameraControlActive = true;
 
         glfwSetInputMode(
             window,
@@ -352,12 +404,12 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods){
 }
 
 void focusCallback(GLFWwindow* window, int focused){
-    bool* cameraControlActive = static_cast<bool*>(glfwGetWindowUserPointer(window));
+    AppState* state = static_cast<AppState*>(glfwGetWindowUserPointer(window));
 
     if(focused) return;
 
     else{
-        *cameraControlActive = false;
+        state->cameraControlActive = false;
 
         glfwSetInputMode(
             window,
@@ -365,4 +417,19 @@ void focusCallback(GLFWwindow* window, int focused){
             GLFW_CURSOR_NORMAL
         );
     }
+}
+
+void loadTimestep(int timestep, const std::vector<std::vector<SimulationCell>>& timesteps, Renderer& renderer, std::size_t lowMassGeometryId, std::size_t highMassGeometryId){
+    std::vector<Point> highMassPoints;
+    std::vector<Point> lowMassPoints;
+
+    for(const SimulationCell& cell : timesteps[timestep]){
+        StarGenerator::generate(cell, highMassPoints, lowMassPoints);
+    }
+
+    Geometry highMassGeometry = GeometryBuilder::makePoints(highMassPoints);
+    Geometry lowMassGeometry = GeometryBuilder::makePoints(lowMassPoints);
+
+    renderer.update(lowMassGeometryId, lowMassGeometry);
+    renderer.update(highMassGeometryId, highMassGeometry);
 }
