@@ -19,7 +19,7 @@ void main()
 
     if (glow)
     {
-        float coreRadius = 0.3;
+        float coreRadius = 0.2;
 
         if (distanceFromCentre < coreRadius)
         {
@@ -68,7 +68,7 @@ void main()
                     distanceFromCentre
                 );
 
-            glowStrength *= 0.35;
+            glowStrength *= 0.5;
 
             FragColor =
                 vec4(

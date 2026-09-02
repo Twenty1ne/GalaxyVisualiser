@@ -20,7 +20,7 @@ namespace
     constexpr float lowMassMinimum = 50.0f;
     constexpr float lowMassMaximum = 350.0f;
 
-    constexpr float highMassSizeScale = 0.08f;
+    constexpr float highMassSizeScale = 0.14;
     constexpr float lowMassSizeScale = 0.03;
 
     // Small variation in where stars appear along the Y axis.

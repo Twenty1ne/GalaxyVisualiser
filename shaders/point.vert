@@ -21,7 +21,7 @@ void main(){
     float pointSize = - aSize / viewPosition.z * 500.0;
 
     if(glow){
-        pointSize *= 3;
+        pointSize *= 5;
     }
 
     gl_PointSize = pointSize;
