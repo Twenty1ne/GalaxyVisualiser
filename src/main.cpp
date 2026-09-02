@@ -84,13 +84,13 @@ int main(){
     }
 
     {
-        int currentTimestep = 100;
+        int currentTimestep = 0;
 
         // ================
         auto loadStart = std::chrono::high_resolution_clock::now();
         // ================
 
-        std::vector<std::vector<SimulationCell>> timesteps = GalaxyData::load("/home/tj/code/thesis/MBSOGM_III_history.txt");
+        std::vector<std::vector<SimulationCell>> timesteps = GalaxyData::load("/home/tj/code/thesis/less_MBSOGM_III_history.txt");
 
         // ================
         auto loadEnd = std::chrono::high_resolution_clock::now();

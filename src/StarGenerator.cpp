@@ -3,6 +3,7 @@
 #include "StellarPopulation.h"
 
 #include <cmath>
+#include <limits>
 #include <random>
 
 namespace
@@ -10,6 +11,8 @@ namespace
     constexpr float pi = 3.14159265358979323846f;
 
     constexpr float powerLawExponent = 2.35f;
+
+    constexpr std::size_t lowMassPointCap = 10;
 
     constexpr float highMassMinimum = 8.0f;
     constexpr float highMassMaximum = 100.0f;
@@ -197,7 +200,8 @@ void StarGenerator::generate(const SimulationCell& cell, std::vector<Point>& hig
             highMassMinimum,
             highMassMaximum,
             powerLawExponent,
-            true
+            true,
+            std::numeric_limits<std::size_t>::max()
         );
 
     const std::vector<StellarRepresentation> lowMassPopulation =
@@ -206,10 +210,11 @@ void StarGenerator::generate(const SimulationCell& cell, std::vector<Point>& hig
             lowMassMinimum,
             lowMassMaximum,
             powerLawExponent,
-            false
+            false,
+            lowMassPointCap
         );
 
-    // High mass stars rendered individually
+    // High mass stars rendering
     addPopulation(
         highMassPoints,
         cell.ring,
@@ -219,7 +224,7 @@ void StarGenerator::generate(const SimulationCell& cell, std::vector<Point>& hig
         highMassSizeScale
     );
 
-    // Low mass stars grouped into batches of lowMassStarsPerPoint before rendering
+    // Low mass stars rendering
     addPopulation(
         lowMassPoints,
         cell.ring,

@@ -10,14 +10,15 @@ StellarPopulation::generatePopulation(
     float minimumMass,
     float maximumMass,
     float powerLawExponent,
-    bool isHighMass
+    bool isHighMass,
+    std::size_t maxCount
 )
 {
     std::vector<StellarRepresentation> population;
 
     float remainingMass = totalMass;
 
-    while (remainingMass > 0.0f)
+    while (remainingMass > 0.0f && population.size() < maxCount)
     {
         const float sampledMass =
             MassDistribution::samplePowerLaw(

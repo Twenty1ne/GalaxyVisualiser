@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <vector>
 
 struct StellarRepresentation
@@ -16,6 +17,7 @@ public:
         float minimumMass,
         float maximumMass,
         float powerLawExponent,
-        bool isHighMass
+        bool isHighMass,
+        std::size_t maxCount
     );
 };
