@@ -21,6 +21,7 @@ add_executable(galaxy_viewer
     src/StarGenerator.cpp
     src/StellarPopulation.cpp
     src/MassDistribution.cpp
+    src/DiskThickness.cpp
     src/GalaxyData.cpp
     external/glad/src/gl.c
 )

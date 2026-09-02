@@ -1,6 +1,7 @@
 #include "StarGenerator.h"
 
 #include "StellarPopulation.h"
+#include "DiskThickness.h"
 
 #include <cmath>
 #include <limits>
@@ -22,9 +23,6 @@ namespace
 
     constexpr float highMassSizeScale = 0.14;
     constexpr float lowMassSizeScale = 0.03;
-
-    // Small variation in where stars appear along the Y axis.
-    constexpr float halfDepth = 0.5f;
 
     const glm::vec3 highMassColour(
         0.75f,
@@ -74,6 +72,8 @@ namespace
             0.0f,
             1.0f
         );
+
+        const float halfDepth = DiskThickness::halfDepth(ring);
 
         // Central cell.
         if (ring == 0)

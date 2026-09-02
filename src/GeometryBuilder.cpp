@@ -1,4 +1,5 @@
 #include "GeometryBuilder.h"
+#include "DiskThickness.h"
 
 #include <glm/trigonometric.hpp>
 #include <glm/gtc/constants.hpp>
@@ -157,7 +158,6 @@ Geometry GeometryBuilder::makeSimulationGrid()
     constexpr int maxRadius = 50;
 
     constexpr float radialWidth = 1.0f;
-    constexpr float depth = 1.0f;
 
     constexpr float gridColorR = 0.20f;
     constexpr float gridColorG = 0.20f;
@@ -167,8 +167,6 @@ Geometry GeometryBuilder::makeSimulationGrid()
     constexpr float pi = 3.14159265358979323846f;
 
     std::vector<float> vertices;
-
-    const float halfDepth = depth / 2.0f;
 
     auto addVertex =
         [&](float x, float y, float z)
@@ -210,6 +208,8 @@ Geometry GeometryBuilder::makeSimulationGrid()
     // Central cell: radius 0 to 0.5.
     {
         constexpr float radius = 0.5f;
+
+        const float halfDepth = DiskThickness::halfDepth(0);
 
         for (int segment = 0;
              segment < arcSegments;
@@ -277,6 +277,8 @@ Geometry GeometryBuilder::makeSimulationGrid()
             (r % 2 == 0)
                 ? deltaTheta / 2.0f
                 : 0.0f;
+
+        const float halfDepth = DiskThickness::halfDepth(r);
 
         for (int site = 0;
              site < siteCount;
