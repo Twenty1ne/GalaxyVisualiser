@@ -30,6 +30,9 @@ struct AppState{
     Renderer* renderer;
     std::size_t lowMassGeometryId;
     std::size_t highMassGeometryId;
+
+    bool isPlaying;
+    float playbackTimer;
 };
 
 void processInput(GLFWwindow* window, Camera& camera, float deltaTime, double& lastMouseX, double& lastMouseY, bool& cameraControlActive, bool& previousCameraControlActive);
@@ -37,6 +40,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void focusCallback(GLFWwindow* window, int focused);
 void loadTimestep(int timestep, const std::vector<std::vector<SimulationCell>>& timesteps, Renderer& renderer, std::size_t lowMassGeometryId, std::size_t highMassGeometryId);
+void stepTimestep(AppState& state, int direction);
+
+constexpr float playbackInterval = 0.1f;
 
 int main(){
     std::cout << std::endl;
@@ -216,6 +222,20 @@ int main(){
 
             lastFrameTime = currentTime;
 
+            if(appState.isPlaying){
+                appState.playbackTimer += deltaTime;
+
+                if(appState.playbackTimer >= playbackInterval){
+                    appState.playbackTimer -= playbackInterval;
+
+                    stepTimestep(appState, 1);
+
+                    if(appState.currentTimestep + 1 >= static_cast<int>(timesteps.size())){
+                        appState.isPlaying = false;
+                    }
+                }
+            }
+
             processInput(
                 window,
                 camera,
@@ -362,32 +382,16 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
         );
     }
 
-    if(key == GLFW_KEY_PERIOD && action == GLFW_PRESS){
-        if(state->currentTimestep + 1 < static_cast<int>(state->timesteps->size())){
-            ++state->currentTimestep;
-
-            loadTimestep(
-                state->currentTimestep,
-                *state->timesteps,
-                *state->renderer,
-                state->lowMassGeometryId,
-                state->highMassGeometryId
-            );
-        }
+    if(key == GLFW_KEY_PERIOD && action == GLFW_PRESS && !state->isPlaying){
+        stepTimestep(*state, 1);
     }
 
-    if(key == GLFW_KEY_COMMA && action == GLFW_PRESS){
-        if(state->currentTimestep > 0){
-            --state->currentTimestep;
+    if(key == GLFW_KEY_COMMA && action == GLFW_PRESS && !state->isPlaying){
+        stepTimestep(*state, -1);
+    }
 
-            loadTimestep(
-                state->currentTimestep,
-                *state->timesteps,
-                *state->renderer,
-                state->lowMassGeometryId,
-                state->highMassGeometryId
-            );
-        }
+    if(key == GLFW_KEY_P && action == GLFW_PRESS){
+        state->isPlaying = !state->isPlaying;
     }
 }
 
@@ -434,4 +438,22 @@ void loadTimestep(int timestep, const std::vector<std::vector<SimulationCell>>& 
 
     renderer.update(lowMassGeometryId, lowMassGeometry);
     renderer.update(highMassGeometryId, highMassGeometry);
+}
+
+void stepTimestep(AppState& state, int direction){
+    int nextTimestep = state.currentTimestep + direction;
+
+    if(nextTimestep < 0 || nextTimestep >= static_cast<int>(state.timesteps->size())){
+        return;
+    }
+
+    state.currentTimestep = nextTimestep;
+
+    loadTimestep(
+        state.currentTimestep,
+        *state.timesteps,
+        *state.renderer,
+        state.lowMassGeometryId,
+        state.highMassGeometryId
+    );
 }
