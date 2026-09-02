@@ -238,6 +238,8 @@ int main(){
                 &height
             );
 
+            glViewport(0, 0, width, height);
+
             float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 
             glm::mat4 view = camera.viewMatrix();

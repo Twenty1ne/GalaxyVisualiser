@@ -177,7 +177,7 @@ void Renderer::render(std::size_t geometryId, float aspectRatio, const glm::mat4
         glm::radians(45.0f),
         aspectRatio,
         0.1f,
-        100.0f
+        1000.0f
     );
 
     shader->setMat4("projection", projection);
