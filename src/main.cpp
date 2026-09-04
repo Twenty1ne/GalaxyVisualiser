@@ -15,6 +15,7 @@
 #include <glm/mat4x4.hpp>
 
 #include <iostream>
+#include <string>
 #include <vector>
 
 // ================
@@ -44,8 +45,15 @@ void stepTimestep(AppState& state, int direction);
 
 constexpr float playbackInterval = 0.1f;
 
-int main(){
+int main(int argc, char** argv){
     std::cout << std::endl;
+
+    if(argc < 2){
+        std::cerr << "Usage: " << argv[0] << " <data_file.txt\n";
+        return 1;
+    }
+
+    const std::string dataFilePath = argv[1];
 
     if(!glfwInit()){
         std::cerr << "Failed to initialise GLFW\n";
@@ -96,7 +104,7 @@ int main(){
         auto loadStart = std::chrono::high_resolution_clock::now();
         // ================
 
-        std::vector<std::vector<SimulationCell>> timesteps = GalaxyData::load("/home/tj/code/thesis/less_MBSOGM_III_history.txt");
+        std::vector<std::vector<SimulationCell>> timesteps = GalaxyData::load(dataFilePath);
 
         // ================
         auto loadEnd = std::chrono::high_resolution_clock::now();
