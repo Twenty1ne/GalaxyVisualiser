@@ -1,5 +1,7 @@
 ---Usage (from project root)---
 
+Compiled using CMake. Once compiled, run with:
+
 ./build/galaxy_viewer.exe \<Galaxy history data file\>
 
 Data file must have format:
