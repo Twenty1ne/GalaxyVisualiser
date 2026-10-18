@@ -16,8 +16,8 @@ LShift - Down
 Space - Up
 
 Playback
-> \< - Step back
-> \> - Step forward
+> \< - Step back\n
+> \> - Step forward\n
 > P - Play
 
 Window
