@@ -8,12 +8,17 @@ With each site seperated by \n and each timestep seperated by an additional \n
 ---CONTROLS---
 
 Movement
-W - Forward
-S - Backward
-A - Left
-D - Right
-LShift - Down
-Space - Up
+> W - Forward
+
+> S - Backward
+
+> A - Left
+
+> D - Right
+
+> LShift - Down
+
+> Space - Up
 
 Playback
 > \< - Step back
