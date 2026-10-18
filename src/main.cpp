@@ -166,8 +166,8 @@ int main(int argc, char** argv){
             << " seconds\n";
         // ================
 
-        Geometry axes = GeometryBuilder::makeAxes();
-        Geometry grid = GeometryBuilder::makeSimulationGrid();
+        // Geometry axes = GeometryBuilder::makeAxes();
+        // Geometry grid = GeometryBuilder::makeSimulationGrid();
 
         Renderer renderer;
         Camera camera;
@@ -181,8 +181,8 @@ int main(int argc, char** argv){
         std::size_t highMassGeometryId = renderer.upload(highMassGeometry);
 
         scene.addGeometry(lowMassGeometryId);
-        scene.addGeometry(renderer.upload(axes));
-        scene.addGeometry(renderer.upload(grid));
+        // scene.addGeometry(renderer.upload(axes));
+        // scene.addGeometry(renderer.upload(grid));
         scene.addGeometry(highMassGeometryId, true);
 
         // ================
