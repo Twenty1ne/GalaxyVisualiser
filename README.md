@@ -1,6 +1,6 @@
 ---Usage (from project root)---
 
-./build/galaxy_viewer.exe <Galaxy history data file>
+./build/galaxy_viewer.exe \<Galaxy history data file\>
 
 Data file must have format:
 
