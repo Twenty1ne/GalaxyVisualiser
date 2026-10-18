@@ -31,5 +31,6 @@ Playback
 > P - Play
 
 Window
-ESC - Unfocus
-LMouse - Focus
+> ESC - Unfocus
+
+> LMouse - Focus
