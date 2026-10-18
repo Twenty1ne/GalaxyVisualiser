@@ -16,9 +16,9 @@ LShift - Down
 Space - Up
 
 Playback
-< - Step back
-> - Step forward
-P - Play
+> \< - Step back
+> \> - Step forward
+> P - Play
 
 Window
 ESC - Unfocus
